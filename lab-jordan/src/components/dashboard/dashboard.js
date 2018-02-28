@@ -1,36 +1,35 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {categoryCreate} from '../../actions/category-actions.js'
-import CategoryForm from '../category/category-form/category-form.js'
-import CategoryItem from '../category/category-item/category-item.js'
+import {renderIf} from '../../lib/utils'
+import {categoryCreate} from '../../action/category-actions'
+import CategoryForm from '../category/category-form/category-form'
 
 class Dashboard extends React.Component {
   render() {
     return (
       <section>
-        <h1>Welcome to my Kanban Board</h1>
+        <h1>Welcome to The Kanban!</h1>
 
         <CategoryForm
           buttonText='create'
-          onComplete={this.props.dashboardCategoryCreate}/>
+          onComplete={this.props.categoryCreate}/>
 
-        {this.props.categories ?
+        {renderIf(this.props.categories,
           this.props.categories.map(cat =>
-            <CategoryItem category={cat} />)
-          :
-          undefined
-        }
+            <div className="category-item" key={cat._id}><h3>{cat.title}</h3></div>)
+        )}
       </section>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  categories: state
+  categories: state.categories,
+  expenses: state.expenses,
 })
 
 const mapDispatchToProps = (dispatch, getState) => ({
-  dashboardCategoryCreate: category => dispatch(categoryCreate(category)),
+  categoryCreate: category => dispatch(categoryCreate(category)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
